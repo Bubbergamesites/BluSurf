@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="https://blusurf.pages.dev">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -327,7 +328,7 @@ let activeGameUrl = "";
         const title = document.getElementById('modalTitle');
         
         // Construct the direct URL for the iframe
-        activeGameUrl = `/Nexus-Proxy/embed#https://${encodeURIComponent(file)}`;
+        activeGameUrl = `/surf/#https://${encodeURIComponent(file)}`;
         
         title.textContent = file;
         frame.src = activeGameUrl; // Set iframe source directly
