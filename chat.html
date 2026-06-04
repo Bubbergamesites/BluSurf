@@ -10,12 +10,12 @@
     <style>
         :root {
             --text-color: #ffffff;
-            --container-bg: rgba(255, 255, 255, 0.85);
+            --container-bg: #0b1d40;;
             --body-bg: #f4f4f4;
             --accent-blue: #2196F3;
             --sidebar-bg: #0b1d40;
             --bg-image: url('blusurf.avif');
-            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-border: #0b1d40;
         }
 
 
@@ -220,17 +220,6 @@
         }
 
         userInput.onkeypress = (e) => { if(e.key==='Enter') send(); };
-
-        const toggle = document.getElementById('theme-toggle');
-        toggle.onchange = () => {
-            const t = toggle.checked ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', t);
-            localStorage.setItem('theme', t);
-        };
-        if(localStorage.getItem('theme')==='dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            toggle.checked = true;
-        }
         updateHistory();
     </script>
 </body>
