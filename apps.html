@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>BluSurf | Apps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #fff;
+        --surface: rgba(255, 255, 255, 0.1);
+        --surface-heavy: rgba(255, 255, 255, 0.2);
+        --text: #000;
+        --radius-lg: 20px;
+        --radius-sm: 12px;
+        --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    .main-content h1 {
+        font-size: 55px; /* Adjust this number to make it even bigger */
+        text-align: center;
+        margin-bottom: 40px;
+        letter-spacing: -2px;
+        width: 100%;
+    }
+    body {
+        font-family: 'Nunito', sans-serif;
+        background: url('/BluSurf.avif') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        color: var(--text);
+    }
+
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 80px;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 20px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        overflow-y: auto;
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1000;
+    }
+
+    .sidebar-btn {
+        background: var(--surface);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+        padding: 12px;
+        font-size: 18px;
+        font-weight: 900;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-align: center;
+    }
+
+    .sidebar-btn:hover:not(.empty) {
+        background: var(--primary);
+        color: black;
+        transform: translateX(5px);
+    }
+
+    .sidebar-btn.empty { opacity: 0.3; cursor: default; }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 100px;
+        flex: 1;
+        padding: 40px;
+    }
+
+    .search-container {
+        position: sticky;
+        top: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(15px);
+        padding: 20px;
+        z-index: 900;
+        border-radius: var(--radius-lg);
+        margin-bottom: 30px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #gameSearch {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px 25px;
+        font-size: 16px;
+        font-family: 'Nunito', sans-serif;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        outline: none;
+    }
+
+    .letter-header {
+        font-weight: 900;
+        font-size: 42px;
+        border-bottom: 2px solid var(--primary);
+        margin: 40px 0 20px 0;
+        display: inline-block;
+    }
+
+    .buttons-container {
+        color
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .game-button {
+        background: var(--surface);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .game-button:hover {
+        background: var(--primary);
+        color: black;
+        transform: translateY(-3px);
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(12px);
+        z-index: 2000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        width: 95%;
+        height: 90%;
+        max-width: 1200px;
+        background: #000;
+        border-radius: var(--radius-lg);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+        color: white;
+        padding: 15px 25px;
+        background: rgba(255,255,255,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    #modalTitle { font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+
+    .modal-controls { display: flex; gap: 10px; }
+
+    .ctrl-btn {
+        background: var(--surface);
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    .ctrl-btn:hover { background: var(--primary); color: black; }
+    .close-btn { background: #ff4747; }
+    .close-btn:hover { background: #ff0000; color: white; }
+
+    .game-frame-container { flex: 1; position: relative; background: #111; }
+    #gameFrame { width: 100%; height: 100%; border: none; }
+</style>
+</head>
+
+<body>
+    <div class="sidebar" id="sidebar"></div>
+
+    <div class="main-content">
+        <h1><span style="font-weight: 800">BluSurf <span style="font-weight: 400; opacity: 0.5;">Apps</span></h1>
+        
+        <div class="search-container">
+            <input type="text" id="gameSearch" placeholder="Search for a game..." onkeyup="filterGames()">
+        </div>
+
+        <div id="sections-container"></div>
+    </div>
+
+    <div id="gameModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="modalTitle">Loading...</span>
+                <div class="modal-controls">
+                    <button onclick="openAboutBlank()" class="ctrl-btn">About:Blank</button>
+                    <button onclick="toggleFullscreen()" class="ctrl-btn">Fullscreen</button>
+                    <button onclick="closeModal()" class="ctrl-btn close-btn">✕</button>
+                </div>
+            </div>
+            <div class="game-frame-container">
+                <iframe id="gameFrame" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data truncated for brevity - use your original massive list here
+    const files = [
+      "amazon.com",
+            "canva.com",
+            "camdiv.com",
+            "chatgpt.com",
+            "crazygames.com",
+            "dailymotion.com",
+            "discord.gg",
+            "disneyplus.com",
+            "dropbox.com",
+            "ebay.com",
+            "fandom.com",
+            "freefy.app",
+            "gemini.google.com",
+            "github.com",
+            "google.com",
+            "hulu.com",
+            "hbomax.com",
+            "icloud.com",
+            "luna.amazon.com",
+            "netflix.com", 
+            "omoggle.com",
+            "paramountplus.com",
+            "peacocktv.com",
+            "pinterest.com",
+            "play.fancade.com", 
+            "pluto.tv",
+            "quora.com",
+            "soundcloud.com",
+            "spotify.com",
+            "tv.apple.com",
+            "twitch.tv",
+            "vimeo.com",
+            "wikipedia.org",
+            "y8.com", 
+            "youtube.com"
+     ];
+let activeGameUrl = "";
+
+    function generateAllSections() {
+        const allChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        const filesByChar = {};
+        allChars.forEach(char => filesByChar[char] = []);
+
+        files.forEach(file => {
+            const firstChar = file.charAt(0).toUpperCase();
+            if (filesByChar[firstChar]) filesByChar[firstChar].push(file);
+        });
+
+        const container = document.getElementById('sections-container');
+        container.innerHTML = ''; 
+
+        allChars.forEach(char => {
+            if (filesByChar[char].length === 0) return;
+
+            const section = document.createElement('div');
+            section.className = 'letter-section';
+            section.id = `section-${char}`;
+            
+            const header = document.createElement('div');
+            header.className = 'letter-header';
+            header.textContent = char;
+            section.appendChild(header);
+
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'buttons-container';
+
+            filesByChar[char].forEach(file => {
+                const btn = document.createElement('button');
+                btn.className = 'game-button';
+                btn.textContent = file;
+                btn.onclick = () => openGame(file);
+                buttonsContainer.appendChild(btn);
+            });
+
+            section.appendChild(buttonsContainer);
+            container.appendChild(section);
+        });
+        generateSidebar(allChars, filesByChar);
+    }
+
+    function openGame(file) {
+        const modal = document.getElementById('gameModal');
+        const frame = document.getElementById('gameFrame');
+        const title = document.getElementById('modalTitle');
+        
+        // Construct the direct URL for the iframe
+        activeGameUrl = `/surf/embed#https://${encodeURIComponent(file)}`;
+        
+        title.textContent = file;
+        frame.src = activeGameUrl; // Set iframe source directly
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('gameModal').style.display = 'none';
+        document.getElementById('gameFrame').src = "about:blank"; 
+    }
+
+    function toggleFullscreen() {
+        const frame = document.getElementById('gameFrame');
+        if (frame.requestFullscreen) frame.requestFullscreen();
+        else if (frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+    }
+
+    function openAboutBlank() {
+        if (!activeGameUrl) return;
+        const win = window.open("about:blank", "_blank");
+        if (win) {
+            win.document.write(`<iframe src="${activeGameUrl}" style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></iframe>`);
+        } else {
+            alert("Please allow popups.");
+        }
+    }
+
+    function downloadCurrentGame() {
+        // Since we are using a proxy iframe, 'downloading' the source is restricted by security.
+        // This button will now open the raw proxy link in a new tab.
+        window.open(activeGameUrl, '_blank');
+    }
+
+    function filterGames() {
+        const filter = document.getElementById('gameSearch').value.toLowerCase();
+        const sections = document.getElementsByClassName('letter-section');
+        for (let section of sections) {
+            const buttons = section.getElementsByClassName('game-button');
+            let match = false;
+            for (let btn of buttons) {
+                const isVisible = btn.textContent.toLowerCase().includes(filter);
+                btn.style.display = isVisible ? "" : "none";
+                if (isVisible) match = true;
+            }
+            section.style.display = match ? "" : "none";
+        }
+    }
+
+    function generateSidebar(allChars, filesByChar) {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.innerHTML = '';
+        allChars.forEach(char => {
+            const btn = document.createElement('button');
+            btn.className = 'sidebar-btn';
+            btn.textContent = char;
+            if (filesByChar[char].length === 0) btn.classList.add('empty');
+            else btn.onclick = () => document.getElementById(`section-${char}`).scrollIntoView({behavior: 'smooth'});
+            sidebar.appendChild(btn);
+        });
+    }
+
+    window.addEventListener('DOMContentLoaded', generateAllSections);
+</script>
+</body>
+</html>
