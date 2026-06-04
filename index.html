@@ -271,10 +271,10 @@ function search(query) {
             url = 'https://' + url;
         }
         // Redirect to the Nexus embed page with the URL
-        window.location.href = `/Nexus-Proxy/#${url}`;
+        window.location.href = `/surf/#${url}`;
     } else {
         // Redirect to the Nexus embed page with a Google search
-        window.location.href = `/Nexus-Proxy/#${searchEngine}${encodeURIComponent(query)}`;
+        window.location.href = `/surf/#${searchEngine}${encodeURIComponent(query)}`;
     }
 }
 
